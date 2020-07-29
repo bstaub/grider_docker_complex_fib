@@ -13,16 +13,16 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build
-#CMD ["npm", "run", "start"]
+#RUN npm run build
+CMD ["npm", "run", "start"]
 
 
 # Just getting source from app/build directory in new image, the rest will be skipped from alpine
 # https://hub.docker.com/_/nginx
-FROM nginx
+#FROM nginx
 # AWS elasticbeanstalk need only EXPOSE 80 for Port Mapping, else its just for admin documentation!
-EXPOSE 3000
-COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
 # AWS Fix Stages are not named
 # COPY --from=builder /app/build /usr/share/nginx/html
-COPY --from=0 /app/build /usr/share/nginx/html
+#COPY --from=0 /app/build /usr/share/nginx/html
+
