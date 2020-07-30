@@ -1,0 +1,47 @@
+language: generic 
+
+sudo: required
+services:
+  - docker
+
+# for testing we build a react fibuonacci test image
+# ./client is the Build Context because we start in travis in root!
+# you can do as many tests you like, just bring in another image and testscript, just add more array - in list
+before_install:
+  - docker build -t bstaub/react-test-fib -f ./client/Dockerfile.dev ./client  
+
+# we so some override in docker, normaly it would run npm run start, for testing we need npm (run) test
+# if the test fails it return != 0, wenn its good it return 0
+script:
+  - docker run -e CI=true bstaub/react-test-fib npm run test
+
+# after success we build the images for docker.hub, we dont have to specify the Dockerfile, because it takes default Dockerfile without .dev
+after_success:
+  - docker build -t bstaub/multi-client-fib ./client
+  - docker build -t bstaub/multi-nginx-fib ./nginx
+  - docker build -t bstaub/multi-server-fib ./server
+  - docker build -t bstaub/multi-worker-fib ./worker
+  # We put in Secret Enviroment Variables in Travis -> Select Project -> More Options -> Settings  (same credentials -> Docker login)
+  # DOCKER_ID  -> bstaub
+  # DOCKER_PASSWORD  -> xxx
+
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push bstaub/multi-client-fib
+  - docker push bstaub/multi-nginx-fib
+  - docker push bstaub/multi-server-fib
+  - docker push bstaub/multi-worker-fib
+
+# deploy:
+#   provider: elasticbeanstalk
+#   region: "us-west-2!!!!!!!!!!!"
+#   app: "grider_react!!!!!!!!!!!"
+#   env: "Docker-env"
+#   bucket_name: "elasticbeanstalk-us-west-2-30034834-search-for-s3"
+#   bucket_path: "grider_react!!!!!!!!!!!"
+#   on:
+#     branch: master
+#   access_key_id: $AWS_ACCESS_KEY
+#   secret_access_key:
+#     secure: "$AWS_SECRET_KEY"
