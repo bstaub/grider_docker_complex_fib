@@ -45,3 +45,18 @@ after_success:
 #   access_key_id: $AWS_ACCESS_KEY
 #   secret_access_key:
 #     secure: "$AWS_SECRET_KEY"
+
+
+# deploy:
+#   edge: true
+#   provider: elasticbeanstalk
+#   region: "us-west-1!!!!!!!!!!!"
+#   app: "multi_docker!!!!!!!!!!!"
+#   env: "Multidocker-env"
+#   bucket_name: "elasticbeanstalk-us-west-2-30034834-search-for-s3"
+#   bucket_path: "multi_docker!!!!!!!!!!!"
+#   on:
+#     branch: master
+#   access_key_id: $AWS_ACCESS_KEY
+#   secret_access_key:
+#     secure: "$AWS_SECRET_KEY"
